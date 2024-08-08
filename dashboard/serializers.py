@@ -15,15 +15,19 @@ class WasteBinSerializer(serializers.ModelSerializer):
         model  = WasteBin
         fields = "__all__"
 
+        extra_fields = ["full_bins", "spacious_bins", "half_bins"]
+        exclude = ()
 
 
-    def full_bins(self, obj):
+
+    def get_full_bins(self, obj):
         return obj.full_bins
     
-    def half_bins (self, obj):
+    def get_half_bins (self, obj):
+        print(obj)
         return obj.half_bins
     
-    def spacious_bins(self, obj):
+    def get_spacious_bins(self, obj):
         return obj.spacious_bins
     
 
@@ -37,12 +41,11 @@ class RequestWasteBinSerializer(serializers.ModelSerializer):
 class WastePickRequestSerializer(serializers.ModelSerializer):
 
     user = serializers.PrimaryKeyRelatedField(default = serializers.CurrentUserDefault(), queryset = User.objects.all())
-    Bin = WasteBinSerializer()
+    parent_bin = WasteBinSerializer()
 
     class Meta:
         model  = WastePickUp
-        fields = ["user", "Bin"]
-
+        fields = "__all__"
 
 
 

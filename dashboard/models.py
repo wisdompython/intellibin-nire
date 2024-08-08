@@ -50,15 +50,15 @@ class WasteBin(BinLocation):
 
     @property
     def full_bins(self):   
-        return self.compartments.filter(user=self.user, bin_level__gt=50).count()
+        return self.compartments.filter(bin_level__gt=50).count()
     
     @property
     def half_bins(self):
-        return self.compartments.filter(user=self.user, bin_level=50).count()
+        return self.compartments.filter(bin_level=50).count()
 
     @property
     def spacious_bins(self):
-        return self.compartments.filter(user=self.user, bin_level__lt=45).count()
+        return self.compartments.filter(bin_level__lt=45).count()
 
 
 
@@ -71,7 +71,7 @@ class WastePickUp(models.Model):
     waste_type = models.CharField(choices=waste_category, max_length=20)
     parent_bin = models.ForeignKey(WasteBin, on_delete=models.CASCADE)
     reward_gained = models.IntegerField(null=True)
-    confirmed = models.BooleanField(default=False)
+    completed = models.BooleanField(default=False)
     pending = models.BooleanField(default=True)
     picked_up = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -80,7 +80,7 @@ class WastePickUp(models.Model):
 
     def gain_reward_points(self):
 
-        compartments = self.parent_bin.comparments.filter(waste_category="RECYCLABLE")        
+        compartments = self.parent_bin.compartments.filter(type_of_waste="RECYCLABLE")        
         # assumption is that a single comparment
         if compartments[0].weight > 50:
             self.parent_bin.reward_points += 10

@@ -9,14 +9,15 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import *
 from django.http import Http404
 from .models import *
 
 from django.http.response import HttpResponse
 
-class DashViewset(ReadOnlyModelViewSet):
-    queryset = WasteBin.objects.prefetch_related("compartments").all()
+class WasteBinViewset(ReadOnlyModelViewSet):
+    queryset = WasteBin.objects.all()
     permission_classes = (IsAuthenticated,)
     serializer_class = WasteBinSerializer
 
@@ -25,20 +26,23 @@ class DashViewset(ReadOnlyModelViewSet):
         return self.queryset.filter(user=self.request.user)
     
 
-class WasteBinViewset(ModelViewSet):
-    pass
     
 
 class WasteBinRequest(ModelViewSet):
     queryset = WasteBinRequest
     serializer_class = RequestWasteBinSerializer
+    
     permission_classes = (IsAuthenticated,)
     http_method_names = ['get','post', 'delete']
+
 
 class WasteBinPickupView(ModelViewSet):
     queryset = WastePickUp.objects.all()
     permission_classes = (IsAuthenticated,)
-   
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["completed", "pending", "waste_type"]
+    serializer_class = WastePickRequestSerializer
+    http_method_names = ['get','post']
 
 
     
