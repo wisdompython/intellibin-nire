@@ -10,7 +10,8 @@ class WasteBinSerializer(serializers.ModelSerializer):
     full_bins = serializers.SerializerMethodField()
     spacious_bins = serializers.SerializerMethodField()
     half_bins = serializers.SerializerMethodField()
-
+    bin_level = serializers.SerializerMethodField()
+    weight = serializers.SerializerMethodField()
     class Meta:
         model  = WasteBin
         fields = "__all__"
@@ -29,6 +30,12 @@ class WasteBinSerializer(serializers.ModelSerializer):
     
     def get_spacious_bins(self, obj):
         return obj.spacious_bins
+    
+    def get_bin_level(self, obj):
+        return obj.bin_level
+    
+    def get_weight(self, obj):
+        return obj.weight
     
 
 class RequestWasteBinSerializer(serializers.ModelSerializer):

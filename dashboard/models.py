@@ -16,8 +16,13 @@ class BinCompartment(models.Model):
     parent_bin = models.ForeignKey("WasteBin", related_name="compartments", on_delete=models.CASCADE)
     type_of_waste = models.CharField(choices=waste_category, max_length=20)
     temperature = models.FloatField(null=True)
-    weight = models.FloatField(null=True, default=0)  
+    weight = models.FloatField(null=True, default=0)
     bin_level = models.IntegerField(null=True)
+
+
+    def __str__(self):
+
+        return f"{self.type_of_waste}_BIN_ID_{self.parent_bin.id}"
 
 
    
@@ -31,14 +36,16 @@ class BinLocation(models.Model):
         abstract = True
 
 class WasteBin(BinLocation):
-    
+    battery_status  =[ 
+        ("FULL", "FULL"),
+        ("LOW", "LOW"),
+        ("OKAY", "OKAY")
+    ]
     reward_points = models.IntegerField(null=True, default=0)
-    
     battery_level = models.IntegerField(null=True)
     charge_status = models.BooleanField(null=True)
     power_consumption = models.FloatField(null=True)
-    battery_status = models.IntegerField(null=True)
-    picked_up = models.BooleanField(default=False)
+    battery_status = models.CharField(choices=battery_status, max_length=20, default=None,null=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
 
 
@@ -50,20 +57,26 @@ class WasteBin(BinLocation):
 
     @property
     def full_bins(self):   
-        return self.compartments.filter(bin_level__gt=50).count()
+        return self.compartments.filter(type_of_waste="NON_RECYCLABLE",bin_level__gt=70).count()
     
     @property
     def half_bins(self):
-        return self.compartments.filter(bin_level=50).count()
+        return self.compartments.filter(type_of_waste="NON_RECYCLABLE",bin_level=50).count()
 
     @property
     def spacious_bins(self):
-        return self.compartments.filter(bin_level__lt=45).count()
-
-
-
-
+        return self.compartments.filter(type_of_waste="NON_RECYCLABLE",bin_level__lt=45).count()
     
+    @property
+    def bin_level(self):
+        return self.compartments.filter(type_of_waste="NON_RECYCLABLE")[0].bin_level
+    
+    @property
+    def weight(self):
+        return self.compartments.filter(type_of_waste="RECYCLABLE")[0].weight
+    
+
+     
 
 
 class WastePickUp(models.Model):
