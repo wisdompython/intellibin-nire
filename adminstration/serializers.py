@@ -54,7 +54,13 @@ class AdminWasteBinSerializer(ModelSerializer):
                             parent_bin = Bin, type_of_waste = "NON_RECYCLABLE"
                         )
         
-        return Bin
+        data =list( WasteBin.objects.filter(id=Bin.id).prefetch_related("compartments").values())
+        
+        data[0]['compartments'] = Bin.compartments.values()
+        print(data[0])
+
+        # print(data[0]['compartments'])
+        return data
 
 
 

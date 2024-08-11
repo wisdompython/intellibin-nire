@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
+from adminstration.serializers import *
 from .serializers import *
 from django.http import Http404
 from .models import *
@@ -50,3 +51,15 @@ class WasteBinPickupView(ModelViewSet):
         return self.queryset.filter(user=self.request.user)
     
     
+class SaveBinData(APIView):
+
+    serializer_class = AdminWasteBinSerializer
+    
+    def get(self,request):
+        serializer = self.serializer_class(data=request.query_params)
+        if serializer.is_valid():
+
+            #data = serializer.create(serializer.validated_data)
+            data = serializer.save()
+            
+        return Response(data, status=status.HTTP_201_CREATED)
