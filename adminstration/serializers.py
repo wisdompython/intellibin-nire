@@ -14,6 +14,7 @@ class CompartmentSerializer(Serializer):
     comp_type = serializers.JSONField(required=False)
 
 class AdminWasteBinSerializer(ModelSerializer):
+    id = serializers.IntegerField(required = False)
     compartments = CompartmentSerializer(required=False)
     full_bins = serializers.SerializerMethodField()
     spacious_bins = serializers.SerializerMethodField()
