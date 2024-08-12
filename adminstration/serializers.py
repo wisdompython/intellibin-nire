@@ -76,9 +76,9 @@ class AdminWasteBinSerializer(ModelSerializer):
         instance.charge_status = validated_data.get("charge_status", instance.charge_status)
         instance.battery_level = validated_data.get("battery_level", instance.battery_level)
         instance.battery_status = validated_data.get("battery_status", instance.battery_status)
-        instance.location = validated_data.get("location", instance.latitude)
-        instance.location = validated_data.get("location", instance.latitude)
-        instance.location = validated_data.get("location", instance.latitude)
+        instance.location = validated_data.get("location", instance.location)
+        instance.latitude = validated_data.get("latitude", instance.latitude)
+        instance.longitude = validated_data.get("longitude", instance.longitude)
 
         instance.save()
 
